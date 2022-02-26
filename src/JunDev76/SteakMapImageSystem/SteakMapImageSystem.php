@@ -47,7 +47,10 @@ class SteakMapImageSystem extends PluginBase{
         CrossUtils::registercommand('steakmapimagesystem', $this, '', DefaultPermissions::ROOT_OPERATOR);
         $this->db = CrossUtils::getDataArray($this->getDataFolder() . 'data.json');
         $this->getScheduler()->scheduleDelayedTask(new ClosureTask(function() : void{
-            $this->loadImage(($this->db['won'] ?? '정보 없음'));
+            $world = $this->getServer()->getWorldManager()->getWorldByName('spawnworld');
+            if($world !== null){
+                $this->loadImage(($this->db['won'] ?? '정보 없음'));
+            }
         }), 20);
     }
 
@@ -100,7 +103,7 @@ class SteakMapImageSystem extends PluginBase{
                 fseek($temp, 0);
                 $path = stream_get_meta_data($temp)['uri'];
                 rename($path, $path . '.png');
-                $path .='.png';
+                $path .= '.png';
                 (new SteakImagePlaceSession($path, new Vector3(220, 68, 210), new Vector3(224, 66, 210), Server::getInstance()->getWorldManager()->getWorldByName('spawnworld')));
                 fclose($temp);
             }
